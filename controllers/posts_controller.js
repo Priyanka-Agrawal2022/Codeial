@@ -21,7 +21,7 @@ module.exports.destroy = async function(req, res) {
     try {
         let post = await Post.findById(req.params.id);
 
-        //  .id means converting the object id into string
+        // .id means converting the object id into string
         if(post.user == req.user.id) {
             post.remove();
     

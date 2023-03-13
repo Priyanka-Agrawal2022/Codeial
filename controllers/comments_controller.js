@@ -14,11 +14,13 @@ module.exports.create = async function(req, res) {
     
             post.comments.push(comment);
             post.save();
-    
+            req.flash('success', 'Comment published!');
+
             res.redirect('/');
         }
     } catch(err) {
-        console.log('Error', err);
+        // console.log('Error', err);
+        req.flash('error', err);
         return;
     }
 }
@@ -26,20 +28,26 @@ module.exports.create = async function(req, res) {
 module.exports.destroy = async function(req, res) {
     try {
         let comment = await Comment.findById(req.params.id);
+        let postId = comment.post;
+        let post = await Post.findById(postId);
 
-        if(comment.user == req.user.id) {
-            let postId = comment.post;
+        if(comment.user == req.user.id || post.user == req.user.id) {
+            // let postId = comment.post;
 
             comment.remove();
 
-            let post = Post.findByIdAndUpdate(postId, {$pull: {comments: req.params.id}});
+            post = Post.findByIdAndUpdate(postId, {$pull: {comments: req.params.id}});
+            req.flash('success', 'Comment deleted!');
+
             return res.redirect('back');
         }
         else {
+            req.flash('error', 'Unauthorized');
             return res.redirect('back');
         }
     } catch(err) {
-        console.log('Error', err);
+        // console.log('Error', err);
+        req.flash('error', err);
         return;
     }
 }
