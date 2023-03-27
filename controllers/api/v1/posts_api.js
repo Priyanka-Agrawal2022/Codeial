@@ -49,10 +49,10 @@ module.exports.destroy = async function(req, res) {
         //     return res.redirect('back');
         // }
     } catch (err) {
-        console.log('*****Error', err);
         // req.flash('error', err); 
         // return res.redirect('back');
-
+        
+        console.log('*****Error', err);
         return res.status(500).json({
             message: "Internal Server Error"
         });
